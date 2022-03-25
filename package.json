@@ -9,8 +9,9 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "express": "^4.16.1",
     "openssl": "^2.0.0",
-    "websocket": "^1.0.34",
-    "express": "^4.16.1"
+    "optimist": "^0.6.1",
+    "websocket": "^1.0.34"
   }
 }

@@ -11,7 +11,7 @@ if ( process.env.NEW_RELIC_HOME ) {
   var SAMPLE_STATS_INTERVAL = 60*1000; // 1 minute
   var SAMPLE_LOAD_INTERVAL = 5*60*1000; // 5 minutes
   var EMPTY_ROOM_LOG_TIMEOUT = 3*60*1000; // 3 minutes
-  var WEBSOCKET_COMPAT = true;
+  var WEBSOCKET_COMPAT = false;
   
   var WebSocketServer = WEBSOCKET_COMPAT ?
 	require("./websocket-compat").server :
@@ -20,8 +20,8 @@ if ( process.env.NEW_RELIC_HOME ) {
   var parseUrl = require('url').parse;
   var fs = require('fs');
   const options = {
-	key: fs.readFileSync('ssl.key'),
-	cert: fs.readFileSync('ssl.cer')
+	key: fs.readFileSync('key.pem'),
+	cert: fs.readFileSync('cert.pem')
   };
   // FIXME: not sure what logger to use
   //var logger = require('../../lib/logger');
@@ -103,7 +103,8 @@ if ( process.env.NEW_RELIC_HOME ) {
   
   var logger = new Logger(0, null, true);
   
-  var server = http.createServer(options,function(request, response) {
+ var server = http.createServer(options,function(request, response) {
+//var server = http.createServer(function(request, response) {
 	var url = parseUrl(request.url, true);
 	var protocol = request.headers["forwarded-proto"] || "https:";
 	var host = request.headers.host;
@@ -416,9 +417,9 @@ if ( process.env.NEW_RELIC_HOME ) {
 		.describe("log", "A file to log to (default $LOG_FILE or stdout)")
 		.describe("stdout", "Log to both stdout and the log file");
 	var port = ops.argv.port || process.env.HUB_SERVER_PORT || process.env.VCAP_APP_PORT ||
-		process.env.PORT || 443;
+		process.env.PORT || 8443;
 	var host = ops.argv.host || process.env.HUB_SERVER_HOST || process.env.VCAP_APP_HOST ||
-		process.env.HOST || '172.16.16.244';
+		process.env.HOST || '127.0.0.1';
 	var logLevel = process.env.LOG_LEVEL || 0;
 	var logFile = process.env.LOG_FILE || ops.argv.log;
 	var stdout = ops.argv.stdout || !logFile;
